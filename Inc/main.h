@@ -9,7 +9,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * Copyright (c) 2017 STMicroelectronics International N.V. 
+  * Copyright (c) 2018 STMicroelectronics International N.V. 
   * All rights reserved.
   *
   * Redistribution and use in source and binary forms, with or without 
@@ -61,10 +61,16 @@
 #define STCK_GPIO_Port GPIOA
 #define DIR_Pin GPIO_PIN_1
 #define DIR_GPIO_Port GPIOA
+#define DIN_1_Pin GPIO_PIN_2
+#define DIN_1_GPIO_Port GPIOA
+#define DIN_2_Pin GPIO_PIN_3
+#define DIN_2_GPIO_Port GPIOA
 #define FLAG_Pin GPIO_PIN_0
 #define FLAG_GPIO_Port GPIOB
 #define STBY_Pin GPIO_PIN_1
 #define STBY_GPIO_Port GPIOB
+#define LED1_Pin GPIO_PIN_8
+#define LED1_GPIO_Port GPIOA
 #define SYNC_Pin GPIO_PIN_4
 #define SYNC_GPIO_Port GPIOB
 
