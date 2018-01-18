@@ -65,6 +65,14 @@
 #define DIN_1_GPIO_Port GPIOA
 #define DIN_2_Pin GPIO_PIN_3
 #define DIN_2_GPIO_Port GPIOA
+#define CS_Pin GPIO_PIN_4
+#define CS_GPIO_Port GPIOA
+#define CK_Pin GPIO_PIN_5
+#define CK_GPIO_Port GPIOA
+#define MISO_Pin GPIO_PIN_6
+#define MISO_GPIO_Port GPIOA
+#define MOSI_Pin GPIO_PIN_7
+#define MOSI_GPIO_Port GPIOA
 #define FLAG_Pin GPIO_PIN_0
 #define FLAG_GPIO_Port GPIOB
 #define STBY_Pin GPIO_PIN_1

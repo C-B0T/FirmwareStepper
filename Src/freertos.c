@@ -51,12 +51,15 @@
 #include "task.h"
 #include "cmsis_os.h"
 
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
+#include "main.h"
+#include "gpio.h"
 
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
 osThreadId defaultTaskHandle;
+osThreadId blinkTaskHandle;
 
 /* USER CODE BEGIN Variables */
 
@@ -64,6 +67,7 @@ osThreadId defaultTaskHandle;
 
 /* Function prototypes -------------------------------------------------------*/
 void StartDefaultTask(void const * argument);
+void StartBlinkTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -97,6 +101,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
+  /* definition and creation of blinkTask */
+  osThreadDef(blinkTask, StartBlinkTask, osPriorityIdle, 0, 128);
+  blinkTaskHandle = osThreadCreate(osThread(blinkTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -117,6 +125,22 @@ void StartDefaultTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* StartBlinkTask function */
+void StartBlinkTask(void const * argument)
+{
+  /* USER CODE BEGIN StartBlinkTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    //osDelay(1000);
+	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
+	osDelay(250);
+	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
+	osDelay(250);
+  }
+  /* USER CODE END StartBlinkTask */
 }
 
 /* USER CODE BEGIN Application */

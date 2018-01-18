@@ -57,6 +57,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "StepperMotorDriver.h"
 
 /* USER CODE END Includes */
 
@@ -111,6 +112,7 @@ int main(void)
   MX_USART1_UART_Init();
 
   /* USER CODE BEGIN 2 */
+  BrushlessMotor_Init();
 
   /* USER CODE END 2 */
 
@@ -212,6 +214,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
 /* USER CODE BEGIN Callback 1 */
+  if (htim->Instance == TIM2) {
+    StepperMotor_TimCallback();
+  }
 
 /* USER CODE END Callback 1 */
 }
