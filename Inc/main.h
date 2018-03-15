@@ -52,7 +52,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "Config.h"
 /* USER CODE END Includes */
 
 /* Private define ------------------------------------------------------------*/

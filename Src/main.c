@@ -57,6 +57,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "smbus2.h"
 #include "StepperMotorDriver.h"
 
 /* USER CODE END Includes */
@@ -85,6 +86,10 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+  extern char end asm("end");
+  extern char estack asm("_estack");
+  static char *heap_start = &end;
+  static char *ram_end = &estack;
 
   /* USER CODE END 1 */
 
@@ -106,14 +111,24 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_I2C1_Init();
+  MX_I2C1_SMBUS_Init();
   MX_SPI1_Init();
   MX_TIM2_Init();
   MX_USART1_UART_Init();
 
   /* USER CODE BEGIN 2 */
-  BrushlessMotor_Init();
+  smbus2_Init(&hsmbus1);
 
+  // TU TU TU TU TU TU TU TU TU TU
+  HAL_GPIO_ReadPin(DIN_1_GPIO_Port, DIN_1_Pin);
+  HAL_GPIO_ReadPin(DIN_2_GPIO_Port, DIN_2_Pin);
+  // FIN TU TU TU TU TU TU TU TU TU
+
+
+  // Welcome
+  printf("FirmwareStepper (" __DATE__ " - " __TIME__ ")\r\n");
+  printf("  heap_start = %p\r\n", heap_start);
+  printf("  ram_end    = %p\r\n", ram_end);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -153,7 +168,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSICalibrationValue = 16;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL4;
   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV1;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -168,14 +183,14 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1|RCC_PERIPHCLK_I2C1;
   PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-  PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
+  PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_SYSCLK;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
