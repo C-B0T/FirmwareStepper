@@ -126,6 +126,7 @@ int main(void)
   HAL_GPIO_ReadPin(DIN_1_GPIO_Port, DIN_1_Pin);
   HAL_GPIO_ReadPin(DIN_2_GPIO_Port, DIN_2_Pin);
 
+  StepperMotor_Demo();
   // FIN TU TU TU TU TU TU TU TU TU
 
 

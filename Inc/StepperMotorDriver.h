@@ -35,6 +35,12 @@ enum Direction
 void StepperMotor_Init ();
 
 /**
+ * @brief
+ * @param
+ */
+void StepperMotor_Demo ();
+
+/**
  * @brief Do n step motor
  * @param step or microstep
  */

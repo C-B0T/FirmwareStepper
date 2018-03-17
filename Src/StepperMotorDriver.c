@@ -72,12 +72,26 @@ static int32_t stepTarget  = 0;
 /*----------------------------------------------------------------------------*/
 /* Private function                                                           */
 /*----------------------------------------------------------------------------*/
+
+static void _spi_send(uint8_t *cmd, uint8_t *res, uint8_t len)
+{
+	uint8_t i = 0;
+	for(i=0 ; i<len ; i++)
+	{
+		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
+		HAL_SPI_TransmitReceive(MOT_SPI, &cmd[i], &res[i], 1U, HAL_MAX_DELAY);
+		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
+		HAL_Delay(1);
+	}
+
+}
+
 static void _enable(void)
 {
 	uint8_t cmd[1] = {SPI_CMD_ENABLE};
 	uint8_t res[1] = {0};
 
-//	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
+	_spi_send(cmd, res, 1);
 	HAL_TIM_PWM_Start_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
 
@@ -86,7 +100,7 @@ static void _disable(void)
 	uint8_t cmd[1] = {SPI_CMD_DISABLE};
 	uint8_t res[1] = {0};
 
-//	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
+	_spi_send(cmd, res, 1);
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
 
@@ -97,55 +111,40 @@ static void _disable(void)
 
 void StepperMotor_Init ()
 {
-	int16_t i = 0;
+	uint8_t cmd[3] = {SPI_CMD_STATUS, SPI_CMD_NOP, SPI_CMD_NOP};
+	uint8_t res[3] = {0};
 
+	// Init
 	stepCounter = 0;
 	stepTarget  = 0;
 
-	uint8_t cmd[3] = {SPI_CMD_STATUS, SPI_CMD_NOP, SPI_CMD_NOP};
-	uint8_t res[3] = {0};
-//	uint8_t cmd[4] = {SPI_CMD_GETPARAM | SPI_CMD_PARAM_TVAL, SPI_CMD_NOP, SPI_CMD_NOP, SPI_CMD_NOP};
-//	uint8_t res[4] = {0};
-
-    // Standby
+    // Reset
 	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_RESET);  // Standby
 	HAL_Delay(1);
-	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_SET);	// Running
+	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_SET);	  // Running
 	HAL_Delay(1);
     
     // Direction
 	HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);	// Forward
 
+	// Get Status
+	_spi_send(cmd, res, 3);
 
-	HAL_GPIO_ReadPin(FLAG_GPIO_Port, FLAG_Pin);
+	// Config
+	//TODO: SPI Configuration (FullStep, MaxCurrent, ...)
+	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_STEP_MODE;
+	cmd[1] = 0x88;
+	_spi_send(cmd, res, 2);
 
+    // Stop Step clock
+	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+}
 
-    // Config
-	//TODO: SPI Configuration (FullStep, AckAlarm, ...)
-	//...
-	// Get Driver status and print it
-	for(i=0 ; i<3 ; i++)
-	{
-		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
-		HAL_SPI_TransmitReceive(MOT_SPI, &cmd[i], &res[i], 1U, HAL_MAX_DELAY);
-		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
-		HAL_Delay(1);
-		HAL_GPIO_ReadPin(FLAG_GPIO_Port, FLAG_Pin);
-	}
-	printf("%X %X %X %X\r\n", res[3], res[2], res[1], res[0]);
-
-
-	cmd[0] = SPI_CMD_ENABLE;
-	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
-	HAL_SPI_TransmitReceive(MOT_SPI, &cmd[0], &res[0], 1U, HAL_MAX_DELAY);
-	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
-	HAL_Delay(1);
-
-	HAL_TIM_PWM_Start_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
-
-
-    // Step clock
-//	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+void StepperMotor_Demo (void)
+{
+	_enable();
+	HAL_Delay(5000);
+	_disable();
 }
 
 void StepperMotor_DoStep (int32_t step)

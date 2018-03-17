@@ -11,6 +11,8 @@
 #include "smbus2_cmd.h"
 #include "status.h"
 
+#include "StepperMotorDriver.h"
+
 /*----------------------------------------------------------------------------*/
 /* Definitions                                                                */
 /*----------------------------------------------------------------------------*/
@@ -44,12 +46,12 @@ void _readInputs(void)
 			buff[i] = 255U;
 	}
 	
-	smbus2_cmd_SetData(0x05, 4, buff);
+	smbus2_cmd_SetData(0x05, 2, buff);
 }
 
 void _stop(void)
 {
-
+	//StepperMotor_Stop();
 }
 
 void _control_S_AU(void)
