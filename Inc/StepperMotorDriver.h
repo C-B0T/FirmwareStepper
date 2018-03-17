@@ -32,7 +32,7 @@ enum Direction
  * @brief
  * @param
  */
-void BrushlessMotor_Init ();
+void StepperMotor_Init ();
 
 /**
  * @brief Do n step motor

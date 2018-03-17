@@ -95,27 +95,46 @@ static void _disable(void)
 /* Implementation                                                             */
 /*----------------------------------------------------------------------------*/
 
-void BrushlessMotor_Init ()
+void StepperMotor_Init ()
 {
+	int16_t i = 0;
+
 	stepCounter = 0;
 	stepTarget  = 0;
 
 	uint8_t cmd[3] = {SPI_CMD_STATUS, SPI_CMD_NOP, SPI_CMD_NOP};
 	uint8_t res[3] = {0};
+//	uint8_t cmd[4] = {SPI_CMD_GETPARAM | SPI_CMD_PARAM_TVAL, SPI_CMD_NOP, SPI_CMD_NOP, SPI_CMD_NOP};
+//	uint8_t res[4] = {0};
 
     // Standby
+	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_RESET);  // Standby
+	HAL_Delay(1);
 	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_SET);	// Running
+	HAL_Delay(1);
     
     // Direction
 	HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);	// Forward
-    
+
+
+	HAL_GPIO_ReadPin(FLAG_GPIO_Port, FLAG_Pin);
+
+
     // Config
 	//TODO: SPI Configuration (FullStep, AckAlarm, ...)
 	//...
 	// Get Driver status and print it
-	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 3, HAL_MAX_DELAY);
+	for(i=0 ; i<3 ; i++)
+	{
+		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
+		HAL_SPI_TransmitReceive(MOT_SPI, &cmd[i], &res[i], 1U, HAL_MAX_DELAY);
+		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_ReadPin(FLAG_GPIO_Port, FLAG_Pin);
+	}
 	printf("%X %X %X %X\r\n", res[3], res[2], res[1], res[0]);
-    
+
+
     // Step clock
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
