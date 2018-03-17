@@ -77,7 +77,7 @@ static void _enable(void)
 	uint8_t cmd[1] = {SPI_CMD_ENABLE};
 	uint8_t res[1] = {0};
 
-	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
+//	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
 	HAL_TIM_PWM_Start_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
 
@@ -86,7 +86,7 @@ static void _disable(void)
 	uint8_t cmd[1] = {SPI_CMD_DISABLE};
 	uint8_t res[1] = {0};
 
-	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
+//	HAL_SPI_TransmitReceive(MOT_SPI, cmd, res, 1, HAL_MAX_DELAY);
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
 
@@ -135,8 +135,17 @@ void StepperMotor_Init ()
 	printf("%X %X %X %X\r\n", res[3], res[2], res[1], res[0]);
 
 
+	cmd[0] = SPI_CMD_ENABLE;
+	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
+	HAL_SPI_TransmitReceive(MOT_SPI, &cmd[0], &res[0], 1U, HAL_MAX_DELAY);
+	HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
+	HAL_Delay(1);
+
+	HAL_TIM_PWM_Start_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+
+
     // Step clock
-	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+//	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 }
 
 void StepperMotor_DoStep (int32_t step)
