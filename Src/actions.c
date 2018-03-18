@@ -39,7 +39,7 @@ void _readInputs(void)
 	input[0] = HAL_GPIO_ReadPin(DIN_1_GPIO_Port, DIN_1_Pin);
 	input[1] = HAL_GPIO_ReadPin(DIN_2_GPIO_Port, DIN_2_Pin);
 
-	for(i = 0 ; i < 4 ; i++) {
+	for(i = 0 ; i < 2 ; i++) {
 		if(input[i] == GPIO_PIN_RESET)
 			buff[i] = 0U;
 		else

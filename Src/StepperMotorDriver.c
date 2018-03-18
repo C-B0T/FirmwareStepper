@@ -131,20 +131,27 @@ void StepperMotor_Init ()
 	_spi_send(cmd, res, 3);
 
 	// Config
-	//TODO: SPI Configuration (FullStep, MaxCurrent, ...)
+	// > FullStep
 	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_STEP_MODE;
 	cmd[1] = 0x88;
+	_spi_send(cmd, res, 2);
+	// > Imax (0x08=250mA)
+	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_TVAL;
+	cmd[1] = 0x08;
 	_spi_send(cmd, res, 2);
 
     // Stop Step clock
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+
+	__HAL_TIM_ENABLE_IT(MOT_TIMER, TIM_IT_UPDATE);
 }
 
 void StepperMotor_Demo (void)
 {
-	_enable();
+	/*_enable();
 	HAL_Delay(5000);
-	_disable();
+	_disable();*/
+	StepperMotor_DoStep(200);
 }
 
 void StepperMotor_DoStep (int32_t step)
@@ -164,4 +171,11 @@ void StepperMotor_TimCallback ()
 
 	if(stepCounter == stepTarget)
 		_disable();
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM2) {
+		StepperMotor_TimCallback();
+	}
 }
