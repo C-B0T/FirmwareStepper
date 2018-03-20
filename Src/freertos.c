@@ -53,13 +53,14 @@
 
 /* USER CODE BEGIN Includes */     
 #include "usart.h"
+#include "actions.h"
 #include "status.h"
 #include "traces.h"
 
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
-osThreadId defaultTaskHandle;
+osThreadId mainTaskHandle;
 osThreadId statusTaskHandle;
 osThreadId tracesTaskHandle;
 
@@ -68,7 +69,7 @@ osThreadId tracesTaskHandle;
 /* USER CODE END Variables */
 
 /* Function prototypes -------------------------------------------------------*/
-void StartDefaultTask(void const * argument);
+void StartMainTask(void const * argument);
 void StartStatusTask(void const * argument);
 void StartTracesTask(void const * argument);
 
@@ -100,9 +101,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  /* definition and creation of mainTask */
+  osThreadDef(mainTask, StartMainTask, osPriorityNormal, 0, 128);
+  mainTaskHandle = osThreadCreate(osThread(mainTask), NULL);
 
   /* definition and creation of statusTask */
   osThreadDef(statusTask, StartStatusTask, osPriorityIdle, 0, 128);
@@ -121,17 +122,18 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 }
 
-/* StartDefaultTask function */
-void StartDefaultTask(void const * argument)
+/* StartMainTask function */
+void StartMainTask(void const * argument)
 {
 
-  /* USER CODE BEGIN StartDefaultTask */
+  /* USER CODE BEGIN StartMainTask */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1000);
+    Update_Process();
+    osDelay(10);
   }
-  /* USER CODE END StartDefaultTask */
+  /* USER CODE END StartMainTask */
 }
 
 /* StartStatusTask function */

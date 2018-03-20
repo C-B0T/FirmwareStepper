@@ -2,7 +2,7 @@
 FREERTOS.FootprintOK=true
 FREERTOS.INCLUDE_vTaskDelayUntil=1
 FREERTOS.IPParameters=Tasks01,configTICK_RATE_HZ,FootprintOK,INCLUDE_vTaskDelayUntil
-FREERTOS.Tasks01=defaultTask,0,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;statusTask,-3,128,StartStatusTask,Default,NULL,Dynamic,NULL,NULL;tracesTask,-3,128,StartTracesTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.Tasks01=mainTask,0,128,StartMainTask,Default,NULL,Dynamic,NULL,NULL;statusTask,-3,128,StartStatusTask,Default,NULL,Dynamic,NULL,NULL;tracesTask,-3,128,StartTracesTask,Default,NULL,Dynamic,NULL,NULL
 FREERTOS.configTICK_RATE_HZ=1000
 File.Version=6
 I2C1.IPParameters=SMBusOwnAddress,Timing,Timeout

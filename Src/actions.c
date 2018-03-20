@@ -63,7 +63,7 @@ void _control_S_AU(void)
 /* Implementation                                                             */
 /*----------------------------------------------------------------------------*/
 
-void Actions_Process(void)
+void Update_Process(void)
 {
 	// Read Inputs
 	_readInputs();

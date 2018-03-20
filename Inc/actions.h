@@ -22,7 +22,7 @@
 
 #include "stdint.h"
 
-void Actions_Process(void);
+void Update_Process(void);
 
 void EmergencyStop(uint8_t len, uint8_t *buff);
 
