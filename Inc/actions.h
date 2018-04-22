@@ -26,6 +26,17 @@ void Update_Process(void);
 
 void EmergencyStop(uint8_t len, uint8_t *buff);
 
+void SetMode(uint8_t len, uint8_t *buff);
+
+void SetSpeed(uint8_t len, uint8_t *buff);
+
+void SetAccDec(uint8_t len, uint8_t *buff);
+
+void DoSteps(uint8_t len, uint8_t *buff);
+
+void Go(uint8_t len, uint8_t *buff);
+
+void Stop(uint8_t len, uint8_t *buff);
 
 
 #endif /* INC_ACTIONS_H_ */

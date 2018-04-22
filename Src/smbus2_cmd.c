@@ -137,12 +137,17 @@ callback_t TabCallback[] = {
 
 	#ifdef STEPPER
 	/* Stepper */
-	{0x10, NULL},        /* Set Mode */
-	{0x11, NULL},        /* Set Speed */
-	{0x12, NULL},        /* Set acc/dec */
-	{0x13, NULL},        /* Do steps */
-	{0x14, NULL},        /* Go */
-	{0x15, NULL},        /* Stop */
+	{0x10, SetMode},     /* Set Mode */
+	{0x11, SetSpeed},    /* Set Speed */
+	{0x12, SetAccDec},   /* Set acc/dec */
+	{0x13, DoSteps},     /* Do steps */
+	{0x14, Go},          /* Go */
+	{0x15, Stop},        /* Stop */
+	#endif
+
+	#ifdef SERVO
+	/* Servo */
+	{0x10, SetAngle},    /* Set Angle */
 	#endif
 
 	{0xFF, NULL},        /* Tab end */

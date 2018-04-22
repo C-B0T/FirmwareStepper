@@ -122,6 +122,9 @@ int main(void)
   smbus2_Init(&hsmbus1);
   StepperMotor_Init();
 
+  // Wait peripheral starting
+  HAL_Delay(1000);
+
   // TU TU TU TU TU TU TU TU TU TU
   HAL_GPIO_ReadPin(DIN_1_GPIO_Port, DIN_1_Pin);
   HAL_GPIO_ReadPin(DIN_2_GPIO_Port, DIN_2_Pin);

@@ -81,7 +81,7 @@ static void _spi_send(uint8_t *cmd, uint8_t *res, uint8_t len)
 		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
 		HAL_SPI_TransmitReceive(MOT_SPI, &cmd[i], &res[i], 1U, HAL_MAX_DELAY);
 		HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
-		HAL_Delay(1);
+		asm("NOP");asm("NOP");asm("NOP");asm("NOP");
 	}
 
 }
@@ -102,6 +102,11 @@ static void _disable(void)
 
 	_spi_send(cmd, res, 1);
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+}
+
+static void _disableIT(void)
+{
+	_disable();
 }
 
 
@@ -129,15 +134,16 @@ void StepperMotor_Init ()
 
 	// Get Status
 	_spi_send(cmd, res, 3);
+	// res should have data
 
 	// Config
 	// > FullStep
 	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_STEP_MODE;
 	cmd[1] = 0x88;
 	_spi_send(cmd, res, 2);
-	// > Imax (0x08=250mA)
+	// > Imax(n) = 31,25mA + 31,25mA * n
 	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_TVAL;
-	cmd[1] = 0x08;
+	cmd[1] = 0x03;  // 125 mA
 	_spi_send(cmd, res, 2);
 
     // Stop Step clock
@@ -151,7 +157,7 @@ void StepperMotor_Demo (void)
 	/*_enable();
 	HAL_Delay(5000);
 	_disable();*/
-	StepperMotor_DoStep(200);
+	StepperMotor_DoStep(2048);
 }
 
 void StepperMotor_DoStep (int32_t step)
@@ -170,7 +176,7 @@ void StepperMotor_TimCallback ()
 		stepCounter--;
 
 	if(stepCounter == stepTarget)
-		_disable();
+		_disableIT();
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
