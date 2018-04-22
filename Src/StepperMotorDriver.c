@@ -86,6 +86,15 @@ static void _spi_send(uint8_t *cmd, uint8_t *res, uint8_t len)
 
 }
 
+static void _direction(enum Direction dir)
+{
+	if (dir == FORWARD)
+		HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_SET);	// Forward
+	else
+		HAL_GPIO_WritePin(DIR_GPIO_Port, DIR_Pin, GPIO_PIN_RESET);	// Backward
+
+}
+
 static void _enable(void)
 {
 	uint8_t cmd[1] = {SPI_CMD_ENABLE};
@@ -164,6 +173,12 @@ void StepperMotor_DoStep (int32_t step)
 {
 	stepTarget = stepCounter + step;
 
+	if(step < 0)
+		direction = REVERSE;
+	else
+		direction = FORWARD;
+
+	_direction(direction);
 	_enable();
 }
 
