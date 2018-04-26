@@ -32,7 +32,7 @@ enum Direction
  * @brief
  * @param
  */
-void StepperMotor_Init ();
+void StepperMotor_Init (uint8_t imax_n);
 
 /**
  * @brief

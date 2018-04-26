@@ -58,6 +58,7 @@
 /* USER CODE BEGIN Includes */
 #include "smbus2.h"
 #include "StepperMotorDriver.h"
+#include "Config.h"
 
 /* USER CODE END Includes */
 
@@ -120,7 +121,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   smbus2_Init(&hsmbus1);
-  StepperMotor_Init();
+  StepperMotor_Init(IMAX_N);
 
   // Wait peripheral starting
   HAL_Delay(1000);

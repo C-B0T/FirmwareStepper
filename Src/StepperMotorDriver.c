@@ -123,7 +123,7 @@ static void _disableIT(void)
 /* Implementation                                                             */
 /*----------------------------------------------------------------------------*/
 
-void StepperMotor_Init ()
+void StepperMotor_Init (uint8_t imax_n)
 {
 	uint8_t cmd[3] = {SPI_CMD_STATUS, SPI_CMD_NOP, SPI_CMD_NOP};
 	uint8_t res[3] = {0};
@@ -152,7 +152,7 @@ void StepperMotor_Init ()
 	_spi_send(cmd, res, 2);
 	// > Imax(n) = 31,25mA + 31,25mA * n
 	cmd[0] = SPI_CMD_SETPARAM | SPI_CMD_PARAM_TVAL;
-	cmd[1] = 0x03;  // 125 mA
+	cmd[1] = imax_n;
 	_spi_send(cmd, res, 2);
 
     // Stop Step clock
