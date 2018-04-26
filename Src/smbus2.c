@@ -9,6 +9,8 @@
 
 #include "smbus2_cmd.h"
 
+#include "Config.h"
+
 /*----------------------------------------------------------------------------*/
 /* Definitions                                                                */
 /*----------------------------------------------------------------------------*/
@@ -64,6 +66,12 @@ void smbus2_Init(SMBUS_HandleTypeDef *h)
 	hsmbus = h;
 
 	state = STATE_0_IDLE;
+
+	// Re-init i2c with new address
+	hsmbus->Init.OwnAddress1 = (I2C_ADDRESS << 1);
+	HAL_SMBUS_Init(hsmbus);
+
+	// Enable IT on i2c smbus packets
 	HAL_SMBUS_EnableListen_IT(hsmbus);
 }
 

@@ -66,7 +66,7 @@ void MX_I2C1_SMBUS_Init(void)
   hsmbus1.Instance = I2C1;
   hsmbus1.Init.Timing = 0x00303D5B;
   hsmbus1.Init.AnalogFilter = SMBUS_ANALOGFILTER_ENABLE;
-  hsmbus1.Init.OwnAddress1 = 64;
+  hsmbus1.Init.OwnAddress1 = 34;
   hsmbus1.Init.AddressingMode = SMBUS_ADDRESSINGMODE_7BIT;
   hsmbus1.Init.DualAddressMode = SMBUS_DUALADDRESS_DISABLE;
   hsmbus1.Init.OwnAddress2 = 0;

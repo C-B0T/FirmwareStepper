@@ -20,7 +20,6 @@
 //#define CANNON_BODY
 //#define CANNON_HEAD
 
-
 /*----------------------------------------------------------------------------*/
 /*                    === CONFIGURATION END ====                              */
 /*                    === CONFIGURATION END ====                              */
@@ -43,9 +42,19 @@
 #elif defined(CANNON_HEAD)
   #define IMAX_N (0x0F)    // 500mA
 #else
-  #error "Functional Configuration missing!"
+  #error "Functional Configuration missing for Imax!"
 #endif
 
+// Configure I2C Address
+#if defined(BARREL)
+  #define I2C_ADDRESS (0x11)
+#elif defined(CANNON_BODY)
+  #define I2C_ADDRESS (0x21)
+#elif defined(CANNON_HEAD)
+  #define I2C_ADDRESS (0x22)
+#else
+  #error "Functional Configuration missing for I2C Address!"
+#endif
 
 
 #endif /* INC_CONFIG_H_ */
