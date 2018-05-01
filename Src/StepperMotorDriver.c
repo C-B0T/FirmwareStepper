@@ -133,8 +133,8 @@ void StepperMotor_Init (uint8_t imax_n)
 	stepTarget  = 0;
 
     // Reset
-	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_RESET);  // Standby
-	HAL_Delay(1);
+//	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_RESET);  // Standby
+//	HAL_Delay(1);
 	HAL_GPIO_WritePin(STBY_GPIO_Port, STBY_Pin, GPIO_PIN_SET);	  // Running
 	HAL_Delay(1);
     
@@ -166,7 +166,7 @@ void StepperMotor_Demo (void)
 	/*_enable();
 	HAL_Delay(5000);
 	_disable();*/
-	StepperMotor_DoStep(2048);
+	StepperMotor_DoStep(2048/5);
 }
 
 void StepperMotor_DoStep (int32_t step)

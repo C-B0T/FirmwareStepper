@@ -51,12 +51,27 @@ void _readInputs(void)
 
 void _stop(void)
 {
+	// Le driver se met en standby electroniquement
 	//StepperMotor_Stop();
 }
 
 void _control_S_AU(void)
 {
+	static GPIO_PinState stby      = GPIO_PIN_RESET;
+	static GPIO_PinState stby_prev = GPIO_PIN_RESET;
 
+	stby_prev = stby;
+	stby = HAL_GPIO_ReadPin(STBY_GPIO_Port, STBY_Pin);
+
+	// Front montant
+	if( (stby_prev == GPIO_PIN_RESET) && (stby == GPIO_PIN_SET) ) {
+		StepperMotor_Init(IMAX_N);
+		StepperMotor_Demo();
+	}
+
+	// Front descendant
+	if( (stby_prev == GPIO_PIN_SET) && (stby == GPIO_PIN_RESET) )
+		_stop();
 }
 
 /*----------------------------------------------------------------------------*/
@@ -69,6 +84,7 @@ void Update_Process(void)
 	_readInputs();
 	
 	// Control S_AU
+	_control_S_AU();
 
 	// Execute Command
 	/* PowerOut : Nothing to do */
@@ -99,7 +115,7 @@ void SetAccDec(uint8_t len, uint8_t *buff)
 
 void DoSteps(uint8_t len, uint8_t *buff)
 {
-
+	StepperMotor_DoStep(2048/5);
 }
 
 void Go(uint8_t len, uint8_t *buff)
