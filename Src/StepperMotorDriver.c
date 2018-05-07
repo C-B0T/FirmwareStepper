@@ -109,8 +109,8 @@ static void _disable(void)
 	uint8_t cmd[1] = {SPI_CMD_DISABLE};
 	uint8_t res[1] = {0};
 
-	_spi_send(cmd, res, 1);
 	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
+	_spi_send(cmd, res, 1);
 }
 
 static void _disableIT(void)
@@ -166,7 +166,7 @@ void StepperMotor_Demo (void)
 	/*_enable();
 	HAL_Delay(5000);
 	_disable();*/
-	StepperMotor_DoStep(2048/5);
+	StepperMotor_DoStep(-200);
 }
 
 void StepperMotor_DoStep (int32_t step)
@@ -180,6 +180,11 @@ void StepperMotor_DoStep (int32_t step)
 
 	_direction(direction);
 	_enable();
+}
+
+void StepperMotor_Stop (void)
+{
+	_disable();
 }
 
 void StepperMotor_TimCallback ()

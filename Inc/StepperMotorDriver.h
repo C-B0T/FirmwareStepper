@@ -47,6 +47,11 @@ void StepperMotor_Demo ();
 void StepperMotor_DoStep (int32_t step);
 
 /**
+ * @brief Stop step motor
+ */
+void StepperMotor_Stop (void);
+
+/**
  * @brief StepperMotor TIM Callback
  */
 void StepperMotor_TimCallback ();

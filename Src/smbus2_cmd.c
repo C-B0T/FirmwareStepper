@@ -13,7 +13,7 @@
 #define STEPPER
 //#define SERVO
 //#define SHIELD_MOM
-//#define BARREL
+//#define BARREL	/* Is defined in Config.h */
 //#define STEPPER_ENCODER
 
 
@@ -148,6 +148,11 @@ callback_t TabCallback[] = {
 	#ifdef SERVO
 	/* Servo */
 	{0x10, SetAngle},    /* Set Angle */
+	#endif
+
+	#ifdef BARREL
+	/* Barrel */
+	{0x50, Goto},     /* Goto num */
 	#endif
 
 	{0xFF, NULL},        /* Tab end */

@@ -25,6 +25,10 @@
 /*----------------------------------------------------------------------------*/
 
 static uint8_t _emergencyStop = false;
+static uint8_t _autoCalib = false;
+
+static int8_t _position = 0;
+static int8_t _target = 0;
 
 /*----------------------------------------------------------------------------*/
 /* Private Functions                                                          */
@@ -67,12 +71,32 @@ void _control_S_AU(void)
 	if( (stby_prev == GPIO_PIN_RESET) && (stby == GPIO_PIN_SET) ) {
 		StepperMotor_Init(IMAX_N);
 		StepperMotor_Demo();
+		_autoCalib = true;
 	}
 
 	// Front descendant
 	if( (stby_prev == GPIO_PIN_SET) && (stby == GPIO_PIN_RESET) )
 		_stop();
 }
+
+void _auto_calibration(void)
+{
+	static GPIO_PinState top      = GPIO_PIN_RESET;
+	static GPIO_PinState top_prev = GPIO_PIN_RESET;
+
+	top_prev = top;
+	top = HAL_GPIO_ReadPin(DIN_1_GPIO_Port, DIN_1_Pin);
+
+	if(_autoCalib == true)
+	{
+		// Front montant
+		if( (top_prev == GPIO_PIN_RESET) && (top == GPIO_PIN_SET) ) {
+			StepperMotor_Stop();
+			_autoCalib = false;
+		}
+	}
+}
+
 
 /*----------------------------------------------------------------------------*/
 /* Implementation                                                             */
@@ -87,7 +111,7 @@ void Update_Process(void)
 	_control_S_AU();
 
 	// Execute Command
-	/* PowerOut : Nothing to do */
+	_auto_calibration();	// Auto-Calibration if startup
 }
 
 void EmergencyStop(uint8_t len, uint8_t *buff)
@@ -115,7 +139,8 @@ void SetAccDec(uint8_t len, uint8_t *buff)
 
 void DoSteps(uint8_t len, uint8_t *buff)
 {
-	StepperMotor_DoStep(2048/5);
+	//StepperMotor_DoStep(2048/5);
+	StepperMotor_DoStep(200/5);
 }
 
 void Go(uint8_t len, uint8_t *buff)
@@ -125,7 +150,14 @@ void Go(uint8_t len, uint8_t *buff)
 
 void Stop(uint8_t len, uint8_t *buff)
 {
+	//StepperMotor_Stop();
+}
 
+void Goto(uint8_t len, uint8_t *buff)
+{
+	int8_t val = buff[0];
+
+	_target = val;
 }
 
 
