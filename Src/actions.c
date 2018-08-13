@@ -30,6 +30,8 @@ static uint8_t _autoCalib = false;
 static int8_t _position = 0;
 static int8_t _target = 0;
 
+static uint8_t _fsm_cmd = 0;
+
 /*----------------------------------------------------------------------------*/
 /* Private Functions                                                          */
 /*----------------------------------------------------------------------------*/
@@ -112,6 +114,7 @@ void Update_Process(void)
 
 	// Execute Command
 	_auto_calibration();	// Auto-Calibration if startup
+
 }
 
 void EmergencyStop(uint8_t len, uint8_t *buff)
@@ -139,8 +142,7 @@ void SetAccDec(uint8_t len, uint8_t *buff)
 
 void DoSteps(uint8_t len, uint8_t *buff)
 {
-	//StepperMotor_DoStep(2048/5);
-	StepperMotor_DoStep(200/5);
+	StepperMotor_DoStep(-200/5);
 }
 
 void Go(uint8_t len, uint8_t *buff)
@@ -150,7 +152,7 @@ void Go(uint8_t len, uint8_t *buff)
 
 void Stop(uint8_t len, uint8_t *buff)
 {
-	//StepperMotor_Stop();
+	StepperMotor_Stop();
 }
 
 void Goto(uint8_t len, uint8_t *buff)

@@ -47,6 +47,11 @@ void StepperMotor_Demo ();
 void StepperMotor_DoStep (int32_t step);
 
 /**
+ * @brief Disable motor drv
+ */
+void StepperMotor_Disable (void);
+
+/**
  * @brief Stop step motor
  */
 void StepperMotor_Stop (void);

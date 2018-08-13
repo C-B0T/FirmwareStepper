@@ -113,9 +113,15 @@ static void _disable(void)
 	_spi_send(cmd, res, 1);
 }
 
-static void _disableIT(void)
+static void _stop(void)
 {
+	HAL_TIM_PWM_Stop_IT(MOT_TIMER, MOT_TIMER_CHANNEL);
 	_disable();
+}
+
+static void _stopIT(void)
+{
+	_stop();
 }
 
 
@@ -182,9 +188,26 @@ void StepperMotor_DoStep (int32_t step)
 	_enable();
 }
 
-void StepperMotor_Stop (void)
+void StepperMotor_Disable (void)
 {
 	_disable();
+}
+
+void StepperMotor_Stop (void)
+{
+	_stop();
+}
+
+uint8_t StepperMotor_isFinished (void)
+{
+	uint8_t ret = 0;
+
+	if(stepCounter == stepTarget)
+		ret = 1;
+	else
+		ret = 0;
+
+	return ret;
 }
 
 void StepperMotor_TimCallback ()
@@ -196,7 +219,7 @@ void StepperMotor_TimCallback ()
 		stepCounter--;
 
 	if(stepCounter == stepTarget)
-		_disableIT();
+		_stopIT();
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
